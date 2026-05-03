@@ -14,6 +14,144 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          device_id: string | null
+          email: string
+          id: string
+          ip_masked: string | null
+          processed_at: string | null
+          reason: string | null
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          device_id?: string | null
+          email: string
+          id?: string
+          ip_masked?: string | null
+          processed_at?: string | null
+          reason?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          device_id?: string | null
+          email?: string
+          id?: string
+          ip_masked?: string | null
+          processed_at?: string | null
+          reason?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      account_links: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          email: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          email: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          email?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      admin_passwords: {
+        Row: {
+          created_at: string
+          id: string
+          password_hash: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          password_hash: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          password_hash?: string
+        }
+        Relationships: []
+      }
+      chat_flag_audit: {
+        Row: {
+          created_at: string
+          decided_at: string
+          decision: string
+          flag_created_at: string
+          flag_expires_at: string
+          flag_id: number
+          id: number
+          message_id: number | null
+          message_text: string | null
+          moderator_tag: string
+          reason: string | null
+          reporter_device_id: string
+          room_id: string
+          target_device_id: string
+          target_seat: number
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string
+          decision: string
+          flag_created_at: string
+          flag_expires_at: string
+          flag_id: number
+          id?: number
+          message_id?: number | null
+          message_text?: string | null
+          moderator_tag: string
+          reason?: string | null
+          reporter_device_id: string
+          room_id: string
+          target_device_id: string
+          target_seat: number
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string
+          decision?: string
+          flag_created_at?: string
+          flag_expires_at?: string
+          flag_id?: number
+          id?: number
+          message_id?: number | null
+          message_text?: string | null
+          moderator_tag?: string
+          reason?: string | null
+          reporter_device_id?: string
+          room_id?: string
+          target_device_id?: string
+          target_seat?: number
+        }
+        Relationships: []
+      }
       player_profiles: {
         Row: {
           accept_threshold: number
@@ -150,6 +288,54 @@ export type Database = {
           },
         ]
       }
+      room_chat_flags: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          expires_at: string
+          id: number
+          message_id: number | null
+          message_text: string | null
+          reason: string | null
+          reporter_device_id: string
+          room_id: string
+          status: string
+          target_device_id: string
+          target_seat: number
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          expires_at: string
+          id?: number
+          message_id?: number | null
+          message_text?: string | null
+          reason?: string | null
+          reporter_device_id: string
+          room_id: string
+          status?: string
+          target_device_id: string
+          target_seat: number
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          expires_at?: string
+          id?: number
+          message_id?: number | null
+          message_text?: string | null
+          reason?: string | null
+          reporter_device_id?: string
+          room_id?: string
+          status?: string
+          target_device_id?: string
+          target_seat?: number
+        }
+        Relationships: []
+      }
       room_players: {
         Row: {
           device_id: string
@@ -280,6 +466,33 @@ export type Database = {
           turn_started_at?: string | null
           turn_timeout_sec?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      sala_chat: {
+        Row: {
+          created_at: string
+          device_id: string
+          id: number
+          name: string
+          sala_slug: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          id?: number
+          name: string
+          sala_slug: string
+          text: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          id?: number
+          name?: string
+          sala_slug?: string
+          text?: string
         }
         Relationships: []
       }
