@@ -136,8 +136,8 @@ function PartidaOnline() {
     [state],
   );
   // Flash transitori del cant (1.6s), derivat del log. Mateix hook que offline.
-  const shoutFlash = useShoutFlash(state);
   const shoutFlashes = useShoutFlashes(state);
+  const shoutFlash = shoutFlashes.length === 0 ? null : shoutFlashes[shoutFlashes.length - 1];
 
   const seatNames = useMemo(() => {
     if (mySeat == null || !players || !seatKinds) {
