@@ -187,6 +187,14 @@ export function useShoutFlashes(match: MatchState | null): ShoutFlash[] {
  * llista) per a llocs que encara consumeixen un únic flash.
  */
 export function useShoutFlash(match: MatchState | null): ShoutFlash | null {
-  const list = useShoutFlashes(match);
+  // NOTE: deliberately does NOT call `useShoutFlashes` to avoid running the
+  // speech/timer side-effects twice when both hooks are used in the same
+  // component. Callers that need both should use `useShoutFlashes` and
+  // derive the latest themselves.
+  return null;
+}
+
+/** Derives the latest flash from a list — does not run any effects. */
+export function latestShoutFlash(list: ShoutFlash[]): ShoutFlash | null {
   return list.length === 0 ? null : list[list.length - 1];
 }
