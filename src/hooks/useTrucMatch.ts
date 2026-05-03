@@ -294,8 +294,8 @@ export function useTrucMatch(options: UseTrucMatchOptions = {}) {
     }
   }, [match.history.length]);
   // Flash transitori del cant: derivat del log via hook compartit amb online.
-  const shoutFlash = useShoutFlash(match);
   const shoutFlashes = useShoutFlashes(match);
+  const shoutFlash = shoutFlashes.length === 0 ? null : shoutFlashes[shoutFlashes.length - 1];
   // Tots els carteles (truc, envit, V/X, família, acceptat) es deriven del
   // `MatchState` via `computeShoutDisplay`. Així offline i online comparteixen
   // exactament la mateixa font de veritat — qualsevol canvi visual fet ací
