@@ -1998,6 +1998,12 @@ export function TrucBoard(props: TrucBoardProps) {
                   : -1;
                 if (myStr > maxOther) suggestTruc3rd = true;
                 else if (isLast3rd && myStr === maxPlayed3 && wonFirstTrick) suggestTruc3rd = true;
+                // Si no hem guanyat la 1a baza i l'única carta que ens queda
+                // és un 3, no destaquem Truc: encara que el 3 puga guanyar
+                // la 3a baza, no garanteix el truc i no volem suggerir-lo.
+                if (suggestTruc3rd && !wonFirstTrick && myCard3.rank === 3) {
+                  suggestTruc3rd = false;
+                }
               }
             }
 
