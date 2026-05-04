@@ -11,7 +11,7 @@ const Regles = () => {
   return (
     <main className="min-h-screen flex flex-col items-center px-4 py-6 pb-12">
       <div className="w-full max-w-lg flex flex-col gap-4">
-        <div className="flex justify-end">
+        <div className="fixed top-4 right-4 z-50">
           <Button
             onClick={() => navigate("/")}
             size="sm"

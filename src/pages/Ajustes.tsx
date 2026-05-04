@@ -83,7 +83,7 @@ function Ajustes() {
   return (
     <main className="menu-screen min-h-screen flex flex-col items-center justify-center px-4 py-5">
       <div className="w-full max-w-md flex flex-col gap-3">
-        <div className="flex justify-end">
+        <div className="fixed top-4 right-4 z-50">
           <Button
             onClick={() => navigate("/")}
             size="sm"
