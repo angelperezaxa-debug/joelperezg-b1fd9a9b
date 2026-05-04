@@ -219,18 +219,6 @@ function Ajustes() {
           onChange={(patch) => update(patch)}
         />
 
-        <Section title={`${t("settings.app_version")} — ${APP_VERSION}`}>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled
-            className="w-full border-primary/40 text-primary"
-          >
-            <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-            {t("settings.update_app")}
-          </Button>
-        </Section>
 
         <Section title={t("settings.admin")}>
           <div className="flex items-center gap-2">
