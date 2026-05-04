@@ -49,7 +49,7 @@ function UnirSala() {
   };
 
   return (
-    <main className="menu-screen min-h-screen flex flex-col items-center px-5 py-8">
+    <main className="menu-screen min-h-screen flex flex-col items-center justify-center px-5 py-8">
       <div className="w-full max-w-md flex flex-col gap-5">
         <div className="flex justify-end">
           <Button

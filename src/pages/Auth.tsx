@@ -137,7 +137,7 @@ function Auth() {
   }
 
   return (
-    <main className="menu-screen min-h-screen flex flex-col items-center px-4 py-5">
+    <main className="menu-screen min-h-screen flex flex-col items-center justify-center px-4 py-5">
       <div className="w-full max-w-md flex flex-col gap-4">
         <div className="flex justify-end">
           <Button
