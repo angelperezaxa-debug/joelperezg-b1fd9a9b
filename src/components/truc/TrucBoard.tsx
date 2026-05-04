@@ -2235,15 +2235,17 @@ export function TrucBoard(props: TrucBoardProps) {
         {belowHandSlot}
       </div>
 
-      <ChatPanel
-        onSay={handleSay}
-        highlightPreguntes={highlightPreguntesEffective}
-        highlightRespostes={highlightRespostesEffective || highlightRespostes2nd || highlightRespostes2ndTrick || highlightRespostes2ndTrickLost}
-        highlightAltres={highlightAltres}
-        highlightedPhraseIds={highlightedPhraseIds.size > 0 ? highlightedPhraseIds : undefined}
-        hiddenPhraseIds={hiddenResponseIds.size > 0 ? hiddenResponseIds : undefined}
-        phraseVars={{ "si-tinc-n": { n: myEnvit } }}
-      />
+      {false && (
+        <ChatPanel
+          onSay={handleSay}
+          highlightPreguntes={highlightPreguntesEffective}
+          highlightRespostes={highlightRespostesEffective || highlightRespostes2nd || highlightRespostes2ndTrick || highlightRespostes2ndTrickLost}
+          highlightAltres={highlightAltres}
+          highlightedPhraseIds={highlightedPhraseIds.size > 0 ? highlightedPhraseIds : undefined}
+          hiddenPhraseIds={hiddenResponseIds.size > 0 ? hiddenResponseIds : undefined}
+          phraseVars={{ "si-tinc-n": { n: myEnvit } }}
+        />
+      )}
 
       {gameEnded && (
         <div className="fixed inset-0 bg-background/90 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" style={{ zIndex: TRUC_Z_INDEX.endGameOverlay }}>
