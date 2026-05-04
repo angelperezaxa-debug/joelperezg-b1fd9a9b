@@ -1516,7 +1516,7 @@ export function TrucBoard(props: TrucBoardProps) {
   }
 
   const handleSay = (phraseId: ChatPhraseId) => {
-    setAltresDismissed(true);
+    if (phraseId === "envida") setAltresDismissed(true);
     const sentPhrase = PHRASES.find((p) => p.id === phraseId);
     if (sentPhrase?.category === "pregunta") setPreguntesDismissed(true);
     if (sentPhrase?.category === "resposta") {
