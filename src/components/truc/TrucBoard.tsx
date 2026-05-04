@@ -1468,6 +1468,12 @@ export function TrucBoard(props: TrucBoardProps) {
   if (envitPhrasesHidden) {
     ENVIT_PHRASE_IDS.forEach((id) => hiddenResponseIds.add(id));
   }
+  // Excepció: si l'equip contrari acaba d'envidar i l'humà té 30-33 punts
+  // d'envit, mostrem "Vols tornar a envidar?" perquè puga consultar el
+  // company. S'ocultarà automàticament en quant es resolga l'envit.
+  if (opponentEnvitPending) {
+    hiddenResponseIds.delete("vols-tornar-envidar");
+  }
   // (S'ha eliminat el botó combinat "Envidar i Truc!". Ara el flux per
   // a fer envidar el company és simplement la indicació "Envida!", i
   // per fer-li trucar la nova indicació "Truca!".)
