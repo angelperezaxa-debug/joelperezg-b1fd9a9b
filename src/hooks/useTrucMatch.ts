@@ -745,6 +745,73 @@ export function useTrucMatch(options: UseTrucMatchOptions = {}) {
 
     const cachedAdvice = consultAdviceRef.current.get(consultKey) ?? "neutral";
 
+    // Abans d'acceptar un envit del rival, el bot pregunta al company
+    // "Vols tornar a envidar?" perquè el company puga renvidar si vol.
+    // Només si: és resposta d'envit, encara és possible renvidar/falta-envit
+    // o vull, el bot acceptaria (myEnvit≥30) i no s'ha consultat ja.
+    const envitConsultKey = `envit-consult-${match.history.length}-${botPlayer}`;
+    if (
+      isResponseTurn &&
+      r.envitState.kind === "pending" &&
+      !consultStartedRef.current.has(envitConsultKey) &&
+      !consultAdviceRef.current.has(envitConsultKey) &&
+      sayRef.current
+    ) {
+      const myEnvitNow = playerTotalEnvit(r, botPlayer);
+      const acts = legalActions(match, botPlayer);
+      const canRaiseOrAccept = acts.some(
+        (a) => a.type === "shout" && (a.what === "vull" || a.what === "renvit" || a.what === "falta-envit"),
+      );
+      const wouldAccept = myEnvitNow >= 30 && canRaiseOrAccept;
+      const partnerEnv = partnerOf(botPlayer);
+      const partnerIsBotEnv = partnerEnv !== HUMAN;
+      if (wouldAccept) {
+        consultStartedRef.current.add(envitConsultKey);
+        const finalizeAfter = (instruction: ChatPhraseId | null) => {
+          // Marca consultat (qualsevol valor) per a no repetir.
+          consultAdviceRef.current.set(envitConsultKey, "neutral");
+          scheduleConsultTimer(() => {
+            // Si el company diu "envida" → renvidem si és possible.
+            if (instruction === "envida") {
+              const renvit = legalActions(matchRef.current, botPlayer).find(
+                (a) => a.type === "shout" && (a.what === "renvit" || a.what === "falta-envit"),
+              );
+              if (renvit) { dispatch(botPlayer, renvit); return; }
+            }
+            // Altrament, decisió normal d'envit.
+            const hints = buildHints();
+            const action = botDecide(matchRef.current, botPlayer, cachedAdvice, hints, tuningRef.current, bluffRateRef.current);
+            if (action) dispatch(botPlayer, action);
+          }, CONSULT_DECIDE_DELAY_MS);
+        };
+        scheduleConsultTimer(() => {
+          sayRef.current?.(botPlayer, "vols-tornar-envidar");
+          if (partnerIsBotEnv) {
+            const answer = partnerAnswerFor(match, partnerEnv, "vols-tornar-envidar", bluffRateRef.current);
+            scheduleConsultTimer(() => {
+              sayRef.current?.(partnerEnv, answer);
+              finalizeAfter(answer);
+            }, CONSULT_BOT_ANSWER_DELAY_MS);
+          } else {
+            // Company humà: espera resposta o timeout.
+            const tid = window.setTimeout(() => finalizeAfter(null), CONSULT_HUMAN_TIMEOUT_MS) as unknown as number;
+            pendingHumanAnswerRef.current = {
+              botPlayer,
+              consultKey: envitConsultKey,
+              timer: tid,
+              resolve: (ans) => {
+                if (pendingHumanAnswerRef.current?.consultKey !== envitConsultKey) return;
+                window.clearTimeout(pendingHumanAnswerRef.current.timer);
+                pendingHumanAnswerRef.current = null;
+                finalizeAfter(ans);
+              },
+            };
+          }
+        }, CONSULT_QUESTION_DELAY_MS);
+        return;
+      }
+    }
+
     const buildHints = () => {
       const hints: {
         cardHint?: CardHint;
