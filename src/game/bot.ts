@@ -1066,13 +1066,15 @@ function decideProactiveTruc(
       }
     }
 
-    if (strongerThanMe === 1 && winningTrickPosition) {
+    if (strongerThanMe === 1) {
       // Una sola carta em pot superar; encara és arriscat però defensable
-      // si la situació demana punts.
-      let p = 0.35;
-      if (losingBig) p = 0.65;
-      else if (closeToWin) p = 0.55;
-      else if (winningBig) p = 0.15;
+      // si la situació demana punts. Considerem trucar fins i tot si anem
+      // darrere de bazas (0-1): tenim la 2a millor carta restant i pot
+      // valer la pena pujar la posta.
+      let p = winningTrickPosition ? 0.35 : 0.25;
+      if (losingBig) p = winningTrickPosition ? 0.65 : 0.55;
+      else if (closeToWin) p = winningTrickPosition ? 0.55 : 0.45;
+      else if (winningBig) p = winningTrickPosition ? 0.15 : 0.1;
       p *= tuning.callPropensity;
       if (Math.random() < p) {
         logTrucDecision("3a-baza-quasi-millor", p, "truc");
