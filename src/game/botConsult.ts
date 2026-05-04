@@ -315,6 +315,20 @@ export function pickQuestion(
     // de permetre-ho si obre per a l'equip i té un as fort.
     (isBotOpeningForTeam(m, bot) && (hasAceEspases || hasAceBastos));
 
+  // Cas especial: 2a baza, hem perdut la 1a i sóc el primer de la
+  // meua pareja en obrir-la. En aquest cas la pregunta tàcticament
+  // útil és "Tens més d'un tres?" (saber si el company té carta top
+  // per a guanyar la baza), no "Portes un tres?" (un 3 sol no
+  // assegura la baza si el rival pot superar-lo).
+  const firstTrickForLost = r.tricks[0];
+  const lostFirstTrick2 =
+    trickIdx === 1 &&
+    !!firstTrickForLost &&
+    firstTrickForLost.parda !== true &&
+    firstTrickForLost.winner !== undefined &&
+    teamOf(firstTrickForLost.winner!) !== myTeam &&
+    isBotOpeningForTeam(m, bot);
+
   // En la 1a baza només incloem "tens-mes-dun-tres" al pool si compleix
   // la mateixa condició estricta.
   const basePool: ChatPhraseId[] =
@@ -322,10 +336,14 @@ export function pickQuestion(
       ? threeQuestionsAllowedFirstTrick && !rivalPlayedTopFirstTrick
         ? ["puc-anar", "que-tens", "tens-mes-dun-tres"]
         : ["puc-anar", "que-tens"]
-      : ["que-tens", "puc-anar"];
-  const pool: ChatPhraseId[] = portesUnTresAllowed
-    ? [...basePool, "portes-un-tres"]
-    : basePool;
+      : lostFirstTrick2
+        ? ["tens-mes-dun-tres"]
+        : ["que-tens", "puc-anar"];
+  const pool: ChatPhraseId[] = lostFirstTrick2
+    ? basePool
+    : portesUnTresAllowed
+      ? [...basePool, "portes-un-tres"]
+      : basePool;
   // Filtra les preguntes la resposta de les quals el company ja ha
   // donat espontàniament: el bot no pot preguntar res que el seu
   // company haja contestat abans que ell preguntara.

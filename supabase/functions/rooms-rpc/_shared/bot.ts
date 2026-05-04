@@ -1698,6 +1698,36 @@ function choosePlayCard(
       if (wonFirst) {
         return { type: "play-card", cardId: lowest.id };
       }
+      // Hem perdut la 1a baza i sóc el primer de la pareja en obrir
+      // la 2a. Si he preguntat "Tens més d'un tres?" al company:
+      //  - resposta forta (té carta top) → tire la més baixa per
+      //    reservar les meues fortes per a la 3a baza.
+      //  - resposta dèbil (no té res) → tire una carta superior a
+      //    un 3 (str > 70). Si en tinc dues "tops" (≥ 85), trie la
+      //    més baixa d'eixes dues per reservar la millor per a la 3a.
+      const lostFirst = !wonFirst && r.tricks[0]!.winner !== undefined;
+      if (lostFirst) {
+        if (partnerAdvice === "strong" || partnerAdvice === "three") {
+          return { type: "play-card", cardId: lowest.id };
+        }
+        if (partnerAdvice === "weak") {
+          const myTops = cards.filter((c) => cardStrength(c) >= 85);
+          if (myTops.length >= 2) {
+            const lowerTop = [...myTops].sort((a, b) => cardStrength(a) - cardStrength(b))[0]!;
+            const matchAct = playActions.find((a) => a.cardId === lowerTop.id);
+            if (matchAct) return matchAct;
+          }
+          const aboveThree = cards
+            .filter((c) => cardStrength(c) > 70)
+            .sort((a, b) => cardStrength(a) - cardStrength(b));
+          if (aboveThree.length >= 1) {
+            const pick = aboveThree[0]!;
+            const matchAct = playActions.find((a) => a.cardId === pick.id);
+            if (matchAct) return matchAct;
+          }
+          return { type: "play-card", cardId: highest.id };
+        }
+      }
     }
 
     if (partnerAdvice === "three") {
