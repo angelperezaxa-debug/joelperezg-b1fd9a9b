@@ -50,19 +50,17 @@ function UnirSala() {
 
   return (
     <main className="menu-screen min-h-screen flex flex-col items-center justify-center px-5 py-8">
+      <Button
+        onClick={() => navigate("/")}
+        size="sm"
+        variant="outline"
+        className="fixed top-4 right-4 z-50 h-8 w-8 p-0 border-foreground/80 text-foreground hover:bg-foreground/10"
+        aria-label={t("common.back_home")}
+        title={t("common.back_home")}
+      >
+        <LogOut className="w-4 h-4" />
+      </Button>
       <div className="w-full max-w-md flex flex-col gap-5">
-        <div className="flex justify-end">
-          <Button
-            onClick={() => navigate("/")}
-            size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0 border-foreground/80 text-foreground hover:bg-foreground/10"
-            aria-label={t("common.back_home")}
-            title={t("common.back_home")}
-          >
-            <LogOut className="w-4 h-4" />
-          </Button>
-        </div>
 
         <header className="text-center">
           <h1 className="font-title font-black italic text-gold text-3xl pr-2 text-center">{t("unir.join_table")}</h1>
