@@ -291,20 +291,6 @@ function Sala() {
           {joining && <p className="text-[11px] text-muted-foreground text-center">{t("sala.reserving")}</p>}
         </section>
 
-        {hasName && (
-          <OnlinePlayersList
-            players={onlinePlayers}
-            myDeviceId={deviceId}
-            excludeDeviceIds={players.map((p) => p.deviceId)}
-            onInvite={
-              isHost && room.status === "lobby" && !tableFull
-                ? (p) => sendInvite(p.deviceId)
-                : undefined
-            }
-            title={t("sala.connected_players")}
-            emptyLabel={t("sala.no_more_connected")}
-          />
-        )}
 
         {isHost && room.status === "lobby" ? (
           <RoomSettings
