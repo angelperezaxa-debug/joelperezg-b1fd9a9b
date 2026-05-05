@@ -361,6 +361,40 @@ function Sala() {
           </Button>
         )}
       </div>
+
+      {hasName && (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              className="fixed right-4 top-20 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+              aria-label={t("sala.connected_players")}
+              title={t("sala.connected_players")}
+            >
+              <Users className="w-5 h-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[85vw] sm:max-w-sm overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>{t("sala.connected_players")}</SheetTitle>
+            </SheetHeader>
+            <div className="mt-4">
+              <OnlinePlayersList
+                players={onlinePlayers}
+                myDeviceId={deviceId}
+                excludeDeviceIds={players.map((p) => p.deviceId)}
+                onInvite={
+                  isHost && room.status === "lobby" && !tableFull
+                    ? (p) => sendInvite(p.deviceId)
+                    : undefined
+                }
+                title=""
+                emptyLabel={t("sala.no_more_connected")}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
     </main>
   );
 }
