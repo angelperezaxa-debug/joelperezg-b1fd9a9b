@@ -1534,7 +1534,7 @@ export function TrucBoard(props: TrucBoardProps) {
   const nameRight = seatNames?.right ?? t("common.bot_right");
 
   return (
-    <main className="min-h-screen flex flex-col relative">
+    <main className="min-h-screen flex flex-col relative pt-5 pb-5">
       {paused && (
         <div className="fixed inset-0 bg-background/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4 pointer-events-auto" style={{ zIndex: TRUC_Z_INDEX.pauseOverlay }}>
           <Pause className="w-16 h-16 text-primary" />
