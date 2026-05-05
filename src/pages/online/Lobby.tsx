@@ -260,23 +260,70 @@ function Lobby() {
         </section>
         <div className="border-t border-gold/60" />
 
-        {hasName && (
-          <OnlinePlayersList
-            players={onlinePlayers}
-            myDeviceId={deviceId}
-            title={t("lobby.connected_players_room")}
-            emptyLabel={t("lobby.no_one_else")}
-          />
-        )}
+        <p className="text-[10px] text-muted-foreground/70 text-center">
+          {(view.joinableCount + view.placeholderCount) === 1
+            ? t("lobby.tables_summary_singular", { count: view.joinableCount + view.placeholderCount })
+            : t("lobby.tables_summary_plural", { count: view.joinableCount + view.placeholderCount })}
+          {view.playingCount > 0 ? t("lobby.tables_summary_in_play", { n: view.playingCount }) : ""}
+        </p>
+      </div>
 
-        {isSalaView && salaSlug && (
-          <SalaChat
-            salaSlug={salaSlug}
-            deviceId={deviceId}
-            name={name}
-            hasName={hasName}
-          />
-        )}
+      {/* Botons flotants: persones connectades i xat de sala */}
+      {hasName && (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              className="fixed right-4 top-20 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+              aria-label={t("lobby.connected_players_room")}
+              title={t("lobby.connected_players_room")}
+            >
+              <Users className="w-5 h-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[85vw] sm:max-w-sm overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>{t("lobby.connected_players_room")}</SheetTitle>
+            </SheetHeader>
+            <div className="mt-4">
+              <OnlinePlayersList
+                players={onlinePlayers}
+                myDeviceId={deviceId}
+                title=""
+                emptyLabel={t("lobby.no_one_else")}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {isSalaView && salaSlug && (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              className="fixed right-4 top-36 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+              aria-label="Xat"
+              title="Xat"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[90vw] sm:max-w-md flex flex-col">
+            <SheetHeader>
+              <SheetTitle>Xat de sala</SheetTitle>
+            </SheetHeader>
+            <div className="mt-4 flex-1 overflow-hidden">
+              <SalaChat
+                salaSlug={salaSlug}
+                deviceId={deviceId}
+                name={name}
+                hasName={hasName}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
 
         <p className="text-[10px] text-muted-foreground/70 text-center">
           {(view.joinableCount + view.placeholderCount) === 1
