@@ -324,14 +324,6 @@ function Lobby() {
           </SheetContent>
         </Sheet>
       )}
-
-        <p className="text-[10px] text-muted-foreground/70 text-center">
-          {(view.joinableCount + view.placeholderCount) === 1
-            ? t("lobby.tables_summary_singular", { count: view.joinableCount + view.placeholderCount })
-            : t("lobby.tables_summary_plural", { count: view.joinableCount + view.placeholderCount })}
-          {view.playingCount > 0 ? t("lobby.tables_summary_in_play", { n: view.playingCount }) : ""}
-        </p>
-      </div>
     </main>
   );
 }
