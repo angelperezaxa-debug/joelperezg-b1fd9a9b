@@ -1179,53 +1179,42 @@ async function advanceBots(
 const handlers: Record<string, (data: any) => Promise<unknown>> = {
   async createRoom(d) {
     if (d.seatKinds[d.hostSeat] !== "human") throw new Error("El seient de l'amfitrió ha de ser 'human'.");
-    const SALA_SLUGS = ["la-falta", "truquers", "joc-fora", "9-bones"] as const;
-    const requestedSlug = typeof d.salaSlug === "string" ? d.salaSlug.toLowerCase() : "";
-    const targetSlugIdx = (SALA_SLUGS as readonly string[]).indexOf(requestedSlug);
-    // Hash determinista (FNV-1a) idèntic al de src/online/salaAssignment.ts.
-    const hashCode = (s: string): number => {
-      let h = 2166136261 >>> 0;
-      for (let i = 0; i < s.length; i++) {
-        h ^= s.charCodeAt(i);
-        h = Math.imul(h, 16777619) >>> 0;
-      }
-      return h >>> 0;
-    };
+    // SEMPRE assignem el codi del primer placeholder lliure, recorrent les
+    // sales en l'ordre fix (la-falta → truquers → joc-fora → 9-bones) i, dins
+    // de cada sala, els 12 slots en ordre. Un placeholder es considera
+    // "lliure" si no existeix cap fila a `rooms` amb aquest codi, o si
+    // existeix però no té jugadors i no està en estat playing/finished/
+    // abandoned (mesa buida reciclable).
     let code = "";
     let existingEmptyRoom: any = null;
-    // Si el client ha enviat un codi concret (el del primer placeholder lliure
-    // de la sala), respectem-lo sempre que estigui lliure i tingui el format
-    // alfanumèric de 6 caràcters. Així el nom "Taula XXXXXX" coincideix amb
-    // el que es veia al lobby.
-    const requestedRaw = typeof d.requestedCode === "string" ? d.requestedCode.toUpperCase() : "";
-    const requestedCode = /^[A-Z0-9]{6}$/.test(requestedRaw) ? requestedRaw : "";
-    if (requestedCode) {
-      const { data: existing } = await admin.from("rooms").select("*").eq("code", requestedCode).maybeSingle();
-      if (!existing) {
-        code = requestedCode;
-      } else if (existing.status !== "playing") {
-        const { data: players } = await admin.from("room_players").select("id").eq("room_id", existing.id).limit(1);
+    outer: for (const slug of SALA_SLUGS) {
+      const codes = FROZEN_PLACEHOLDER_CODES[slug] ?? [];
+      for (const candidate of codes) {
+        const { data: existing } = await admin
+          .from("rooms")
+          .select("*")
+          .eq("code", candidate)
+          .maybeSingle();
+        if (!existing) {
+          code = candidate;
+          break outer;
+        }
+        if (existing.status === "playing" || existing.status === "finished" || existing.status === "abandoned") {
+          continue;
+        }
+        const { data: players } = await admin
+          .from("room_players")
+          .select("id")
+          .eq("room_id", existing.id)
+          .limit(1);
         if (!players || players.length === 0) {
-          code = requestedCode;
+          code = candidate;
           existingEmptyRoom = existing;
+          break outer;
         }
       }
     }
-    // Fallback: genera codis de 6 caràcters i, si s'ha demanat sala, descarta
-    // candidats que no caiguin a aquesta sala segons el hash.
-    if (!code) {
-      const MAX_TRIES = 60;
-      for (let i = 0; i < MAX_TRIES; i++) {
-        const candidate = generateRoomCode();
-        if (targetSlugIdx >= 0) {
-          const idx = hashCode(candidate) % SALA_SLUGS.length;
-          if (idx !== targetSlugIdx) continue;
-        }
-        const { data: existing } = await admin.from("rooms").select("id").eq("code", candidate).maybeSingle();
-        if (!existing) { code = candidate; break; }
-      }
-    }
-    if (!code) throw new Error("No s'ha pogut generar un codi de sala. Torna-ho a provar.");
+    if (!code) throw new Error("No hi ha cap mesa lliure ara mateix. Torna-ho a provar més tard.");
 
     const targetCama = d.targetCama === 9 || d.targetCama === 12 ? d.targetCama : 12;
     const turnTimeoutSec = [15, 30, 45, 60].includes(d.turnTimeoutSec) ? d.turnTimeoutSec : 30;
