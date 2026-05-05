@@ -8,7 +8,8 @@ import { joinRoom, listLobbyRooms, adminCloseRoom, type LobbyRoomDTO } from "@/o
 import { TableSeatPicker, type SeatInfo } from "@/online/TableSeatPicker";
 import type { PlayerId } from "@/game/types";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LogOut, Plus, RefreshCw, Settings, ShieldX, Wifi } from "lucide-react";
+import { Loader2, LogOut, Plus, RefreshCw, Settings, ShieldX, Wifi, MessageCircle, Users } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useLobbyPresence } from "@/online/useLobbyPresence";
 import { OnlinePlayersList } from "@/online/OnlinePlayersList";
 import { useAdminPassword } from "@/hooks/useAdminPassword";
